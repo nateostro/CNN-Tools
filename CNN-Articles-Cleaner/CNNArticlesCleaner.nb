@@ -1,0 +1,194 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7035,        186]
+NotebookOptionsPosition[      5691,        155]
+NotebookOutlinePosition[      6144,        173]
+CellTagsIndexPosition[      6101,        170]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["CNN Article Cleaner", "Title",
+ CellChangeTimes->{{3.796682180824741*^9, 3.796682184135859*^9}, 
+   3.796682241878413*^9, {3.796682988768847*^9, 3.796682990898518*^9}, {
+   3.796683955629387*^9, 
+   3.7966839563724957`*^9}},ExpressionUUID->"6f84408a-26ff-4138-829d-\
+036739e20b27"],
+
+Cell["Author : Nathan Ostrowski, @nostrowski", "Subtitle",
+ CellChangeTimes->{{3.796682192546691*^9, 
+  3.796682232581892*^9}},ExpressionUUID->"82908687-671b-45dd-a7d7-\
+734c0270118c"],
+
+Cell[CellGroupData[{
+
+Cell["Description :", "Section",
+ CellChangeTimes->{{3.7966822625433292`*^9, 
+  3.796682274649291*^9}},ExpressionUUID->"1f98bca6-7d49-4618-a32c-\
+e68456ebb3ca"],
+
+Cell["\<\
+The following notebook, when evaluated, will read through the raw CNN \
+articles imported in an \[OpenCurlyDoubleQuote]articleTexts.mx\
+\[CloseCurlyDoubleQuote] file and clean each one before exporting a list of \
+cleaned CNN articles in a \[OpenCurlyDoubleQuote]cleanedArticleTexts.mx\
+\[CloseCurlyDoubleQuote] file. 
+
+To run this notebook, simply go to \[OpenCurlyDoubleQuote]Evaluation > \
+Evaluate Notebook\[CloseCurlyDoubleQuote]\
+\>", "Text",
+ CellChangeTimes->{{3.796682168550672*^9, 3.796682175665881*^9}, {
+   3.796682286774581*^9, 3.796682324556007*^9}, {3.796682532527923*^9, 
+   3.796682648468836*^9}, {3.796682896744295*^9, 3.7966828970786858`*^9}, {
+   3.796682999141775*^9, 3.796683129181966*^9}, {3.7966832452323923`*^9, 
+   3.7966832459234457`*^9}, {3.796683653156513*^9, 3.7966836533593483`*^9}, 
+   3.7966884452755203`*^9},ExpressionUUID->"ee8cc0a7-f5ab-4b72-818d-\
+432b1df15159"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Executable Code", "Section",
+ CellChangeTimes->{{3.796682282746868*^9, 3.796682285077179*^9}, 
+   3.796682337329475*^9},ExpressionUUID->"0c4f139a-fe63-4350-b157-\
+136a25e9033c"],
+
+Cell[BoxData[
+ RowBox[{"articleTexts", " ", "=", " ", 
+  RowBox[{"Import", "[", "\"\<articleTexts.mx\>\"", "]"}]}]], "Input",
+ CellChangeTimes->{{3.796683152719633*^9, 3.79668316511961*^9}},
+ CellLabel->
+  "In[263]:=",ExpressionUUID->"4363dd53-9c75-4829-8c36-6983b554e8ad"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CleanArticleText", "[", "article", "]"}], " ", ":=", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"StringContainsQ", "[", 
+       RowBox[{"article", ",", "\"\<(CNN)\>\""}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"cleanedArticle", " ", "=", " ", 
+        RowBox[{"StringSplit", "[", 
+         RowBox[{
+          RowBox[{"StringSplit", "[", 
+           RowBox[{"article", ",", " ", "\"\<(CNN)\>\""}], "]"}], ",", 
+          "\"\<Search\n\nUS\>\""}], "]"}]}], ";"}]}], "\[IndentingNewLine]", 
+     "]"}], " ", ";", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"StringContainsQ", "[", 
+       RowBox[{"article", ",", "\"\<(CNN \>\""}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"cleanedArticle", " ", "=", " ", 
+        RowBox[{"StringSplit", "[", 
+         RowBox[{
+          RowBox[{"StringSplit", "[", 
+           RowBox[{"article", ",", " ", "\"\<(CNN \>\""}], "]"}], ",", 
+          "\"\< \n\nContent by\>\""}], "]"}]}], ";"}]}], 
+     "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Return", " ", "[", 
+     RowBox[{
+      RowBox[{"cleanedArticle", "[", 
+       RowBox[{"[", "2", "]"}], "]"}], "[", 
+      RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "\[IndentingNewLine]", 
+   ")"}]}]], "Input",
+ CellChangeTimes->{{3.796683213014065*^9, 3.7966832225870857`*^9}, {
+  3.79668326037578*^9, 3.79668328235277*^9}, {3.7966834335659103`*^9, 
+  3.79668343423787*^9}, {3.7966834886206207`*^9, 3.796683489998526*^9}, {
+  3.796683588512496*^9, 3.796683613841134*^9}, {3.796683657526802*^9, 
+  3.7966836647632236`*^9}},ExpressionUUID->"93ac4cfb-c2ba-4a1f-833c-\
+f87ca10c7cd8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleanedArticleTexts", " ", "=", " ", 
+   RowBox[{"{", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.796683326063364*^9, 3.796683342703261*^9}},
+ CellLabel->
+  "In[272]:=",ExpressionUUID->"c002c876-f983-4c97-acf9-e616af79b0e2"],
+
+Cell[BoxData[
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "0"}], ",", " ", 
+   RowBox[{"i", "<", 
+    RowBox[{"Length", "[", "articleTexts", "]"}]}], ",", " ", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"AppendTo", "[", 
+    RowBox[{"cleanedArticleTexts", ",", " ", 
+     RowBox[{"CleanArticleText", "[", 
+      RowBox[{"articleTexts", "[", 
+       RowBox[{"[", "i", "]"}], "]"}], "]"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.7966833842065487`*^9, 3.79668352372482*^9}},
+ CellLabel->
+  "In[273]:=",ExpressionUUID->"d339234d-df2f-4c5c-9da0-bc65a8c3ac74"],
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{"cleanedArticleTexts", ",", " ", "\"\<cleanedArticleTexts.mx\>\""}],
+   "]"}]], "Input",
+ CellChangeTimes->{{3.796683562098261*^9, 3.796683571427452*^9}, {
+  3.796683620857448*^9, 
+  3.7966836803543167`*^9}},ExpressionUUID->"ee0d22a8-d3b1-43b9-b229-\
+d9e18d180f46"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 755},
+WindowMargins->{{20, Automatic}, {Automatic, 44}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 18, 2020)",
+StyleDefinitions->"ReverseColor.nb",
+ExpressionUUID->"c475886b-b570-4fc3-b6bb-799a01a99cd1"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 287, 5, 98, "Title",ExpressionUUID->"6f84408a-26ff-4138-829d-036739e20b27"],
+Cell[870, 29, 184, 3, 53, "Subtitle",ExpressionUUID->"82908687-671b-45dd-a7d7-734c0270118c"],
+Cell[CellGroupData[{
+Cell[1079, 36, 160, 3, 67, "Section",ExpressionUUID->"1f98bca6-7d49-4618-a32c-e68456ebb3ca"],
+Cell[1242, 41, 909, 16, 112, "Text",ExpressionUUID->"ee8cc0a7-f5ab-4b72-818d-432b1df15159"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2188, 62, 183, 3, 67, "Section",ExpressionUUID->"0c4f139a-fe63-4350-b157-136a25e9033c"],
+Cell[2374, 67, 273, 5, 30, "Input",ExpressionUUID->"4363dd53-9c75-4829-8c36-6983b554e8ad"],
+Cell[2650, 74, 1804, 43, 304, "Input",ExpressionUUID->"93ac4cfb-c2ba-4a1f-833c-f87ca10c7cd8"],
+Cell[4457, 119, 263, 6, 30, "Input",ExpressionUUID->"c002c876-f983-4c97-acf9-e616af79b0e2"],
+Cell[4723, 127, 623, 15, 73, "Input",ExpressionUUID->"d339234d-df2f-4c5c-9da0-bc65a8c3ac74"],
+Cell[5349, 144, 314, 7, 30, "Input",ExpressionUUID->"ee0d22a8-d3b1-43b9-b229-d9e18d180f46"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

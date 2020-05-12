@@ -1,0 +1,360 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     15308,        352]
+NotebookOptionsPosition[     12994,        304]
+NotebookOutlinePosition[     13391,        320]
+CellTagsIndexPosition[     13348,        317]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Articles Sentiment Classifier", "Title",
+ CellChangeTimes->{{3.796682180824741*^9, 3.796682184135859*^9}, 
+   3.796682241878413*^9, {3.796682988768847*^9, 3.796682990898518*^9}, {
+   3.796683955629387*^9, 3.7966839563724957`*^9}, {3.796685288872096*^9, 
+   3.7966852933057537`*^9}},ExpressionUUID->"8e9d676f-02c7-46e8-ae80-\
+bfc196b55b09"],
+
+Cell["Author : Nathan Ostrowski, @nostrowski", "Subtitle",
+ CellChangeTimes->{{3.796682192546691*^9, 
+  3.796682232581892*^9}},ExpressionUUID->"cf77f1ed-5b2b-4f87-b950-\
+7b08700c8bed"],
+
+Cell[CellGroupData[{
+
+Cell["Description :", "Section",
+ CellChangeTimes->{{3.7966822625433292`*^9, 
+  3.796682274649291*^9}},ExpressionUUID->"c2d0ca25-c9e8-47e2-bcd0-\
+944686755f5c"],
+
+Cell["\<\
+The following notebook, when evaluated, will read through the cleaned text of \
+a given article, split that text into individual sentences, run a Sentiment \
+Classifier on each of those sentences, find the mean of each Positive, \
+Neutral, and Negative Sentiment value, then create an Association with each \
+of those mean Sentiment values. The notebook will then append that mean \
+Sentiment Association to a List of mean Sentiment Associations which is \
+itself a value whose key is the article\[CloseCurlyQuote]s date in a broader \
+Association. Finally, the notebook will convert the broader Association to a \
+RawJSON and export it to \[OpenCurlyDoubleQuote]sentiments.json\
+\[CloseCurlyDoubleQuote].
+
+To run this notebook, simply go to  \[OpenCurlyDoubleQuote]Evaluation > \
+Evaluate Notebook\[CloseCurlyDoubleQuote]
+
+NOTE: This Classifier is built to work with CNN links as it evaluates the \
+date of an article from its original link. To use other news sources, adjust \
+the articleDate variable accordingly. \
+\>", "Text",
+ CellChangeTimes->{{3.796682168550672*^9, 3.796682175665881*^9}, {
+  3.796682286774581*^9, 3.796682324556007*^9}, {3.796682532527923*^9, 
+  3.796682648468836*^9}, {3.796682896744295*^9, 3.7966828970786858`*^9}, {
+  3.796682999141775*^9, 3.796683129181966*^9}, {3.7966832452323923`*^9, 
+  3.7966832459234457`*^9}, {3.796683653156513*^9, 3.7966836533593483`*^9}, {
+  3.7966853002865334`*^9, 3.796685314652824*^9}, {3.796685359591605*^9, 
+  3.796685643891616*^9}, {3.7966864253504333`*^9, 3.796686476126346*^9}, {
+  3.796687468834921*^9, 3.79668757412656*^9}, {3.796688143097254*^9, 
+  3.7966881567019167`*^9}},ExpressionUUID->"63675989-16d9-4d03-b417-\
+9357c069932b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Executable Code", "Section",
+ CellChangeTimes->{{3.796682282746868*^9, 3.796682285077179*^9}, 
+   3.796682337329475*^9},ExpressionUUID->"029b7f44-3711-4c92-9757-\
+b6d36b80f024"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"cleanedArticleTexts", " ", "=", " ", 
+   RowBox[{"Import", "[", "\"\<cleanedArticleTexts.mx\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"articleLinks", " ", "=", " ", 
+   RowBox[{"Import", "[", "\"\<articleLinksV2.mx\>\"", "]"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.796686521344653*^9, 3.7966865503915052`*^9}, {
+  3.796687322381987*^9, 3.79668734151152*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"77a2a264-c96c-4927-8e8f-058bdcd4c693"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"sentimentsAssociations", " ", "=", " ", 
+   RowBox[{"Association", "[", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{3.796686553804667*^9},
+ CellLabel->"In[27]:=",ExpressionUUID->"ab751ff8-1b72-4b5e-828a-ea22cd08781a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"i", "=", "0"}], ",", " ", 
+    RowBox[{"i", "<", 
+     RowBox[{"Length", "[", "cleanedArticleTexts", "]"}]}], ",", 
+    RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"StringContainsQ", "[", 
+       RowBox[{
+        RowBox[{"ToString", "[", 
+         RowBox[{"articleLinks", "[", 
+          RowBox[{"[", "i", "]"}], "]"}], "]"}], ",", "\"\<2020\>\""}], "]"}],
+       ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"articleDate", " ", "=", " ", 
+        RowBox[{"StringTake", "[", 
+         RowBox[{
+          RowBox[{"articleLinks", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"21", ",", "30"}], "}"}]}], "]"}]}], " ", ";", 
+       RowBox[{"articleSentences", " ", "=", " ", 
+        RowBox[{"TextSentences", "[", 
+         RowBox[{"cleanedArticleTexts", "[", 
+          RowBox[{"[", "i", "]"}], "]"}], "]"}]}], " ", ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"totalArticleSentiments", " ", "=", " ", 
+        RowBox[{"Classify", "[", 
+         RowBox[{
+         "\"\<Sentiment\>\"", ",", "articleSentences", ",", " ", 
+          "\"\<Probabilities\>\""}], "]"}]}], " ", ";", "\[IndentingNewLine]", 
+       RowBox[{"positives", " ", "=", " ", 
+        RowBox[{
+        "\"\<Positive\>\"", " ", "/.", " ", "totalArticleSentiments"}]}], " ",
+        ";", "\[IndentingNewLine]", 
+       RowBox[{"avgPositive", " ", "=", " ", 
+        RowBox[{"Mean", "[", "positives", "]"}]}], " ", ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"neutrals", " ", "=", " ", 
+        RowBox[{
+        "\"\<Neutral\>\"", " ", "/.", " ", "totalArticleSentiments"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"avgNeutral", " ", "=", " ", 
+        RowBox[{"Mean", "[", "neutrals", "]"}]}], " ", ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"negatives", " ", "=", " ", 
+        RowBox[{
+        "\"\<Negative\>\"", " ", "/.", " ", "totalArticleSentiments"}]}], ";",
+        " ", "\[IndentingNewLine]", 
+       RowBox[{"avgNegative", " ", "=", " ", 
+        RowBox[{"Mean", "[", "negatives", "]"}]}], " ", ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"thisArticle", " ", "=", " ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<Positive\>\"", "\[Rule]", " ", "avgPositive"}], ",", 
+          " ", 
+          RowBox[{"\"\<Neutral\>\"", "\[Rule]", " ", "avgNeutral"}], ",", " ", 
+          RowBox[{"\"\<Negative\>\"", " ", "\[Rule]", " ", "avgNegative"}]}], 
+         "|>"}]}], " ", ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"KeyExistsQ", "[", 
+          RowBox[{"sentimentsAssociations", ",", "articleDate"}], "]"}], ",", 
+         " ", 
+         RowBox[{
+          RowBox[{"currentDaySentiments", " ", "=", " ", 
+           RowBox[{"sentimentsAssociations", "[", "articleDate", "]"}]}], " ",
+           ";", "\[IndentingNewLine]", 
+          RowBox[{"AppendTo", "[", 
+           RowBox[{"currentDaySentiments", ",", " ", "thisArticle"}], "]"}], 
+          " ", ";", "\[IndentingNewLine]", 
+          RowBox[{"AssociateTo", "[", 
+           RowBox[{"sentimentsAssociations", ",", " ", 
+            RowBox[{"articleDate", "\[Rule]", " ", "currentDaySentiments"}]}],
+            "]"}], " ", ";"}], "\[IndentingNewLine]", ",", " ", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"currentDaySentiments", " ", "=", " ", 
+           RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"AppendTo", "[", 
+           RowBox[{"currentDaySentiments", ",", " ", "thisArticle"}], "]"}], 
+          " ", ";", "\[IndentingNewLine]", 
+          RowBox[{"AssociateTo", "[", 
+           RowBox[{"sentimentsAssociations", ",", " ", 
+            RowBox[{"articleDate", "\[Rule]", " ", "currentDaySentiments"}]}],
+            "]"}], " ", ";"}]}], "\[IndentingNewLine]", "]"}]}], 
+      "\[IndentingNewLine]", ",", " ", 
+      RowBox[{"Continue", "[", "]"}]}], "]"}]}], "\[IndentingNewLine]", "]"}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Print", "[", "sentimentsAssociations", "]"}]}], "Input",
+ CellChangeTimes->{{3.7966865085880117`*^9, 3.796686510364562*^9}, {
+  3.7966872200702667`*^9, 3.796687222031461*^9}, {3.7966873556227217`*^9, 
+  3.796687359531357*^9}, {3.796687394139943*^9, 3.7966873963721323`*^9}, {
+  3.796687427415163*^9, 3.796687440015788*^9}},
+ CellLabel->"In[28]:=",ExpressionUUID->"640cc3f2-c067-4155-9241-62d2808c6acf"],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.7967669163546333`*^9},
+ CellLabel->"Out[28]=",ExpressionUUID->"60cf477b-ce37-4136-be8b-e90841e8c0da"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "articleLinks", "]"}]], "Input",
+ CellChangeTimes->{{3.7967669299296007`*^9, 3.7967669381032877`*^9}},
+ CellLabel->"In[30]:=",ExpressionUUID->"f7078a60-c530-4d52-89e0-7fc94619a60d"],
+
+Cell[BoxData["5796"], "Output",
+ CellChangeTimes->{3.796766938395825*^9},
+ CellLabel->"Out[30]=",ExpressionUUID->"ec304091-9a37-4118-a90b-7b8632034e6e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "cleanedArticleTexts", "]"}]], "Input",
+ CellChangeTimes->{{3.796766939763886*^9, 3.796766945246421*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"a2a66861-70bd-4363-8ffd-a972f261a846"],
+
+Cell[BoxData["5965"], "Output",
+ CellChangeTimes->{3.796766945713304*^9},
+ CellLabel->"Out[31]=",ExpressionUUID->"13a1eb95-0093-44e0-b3c3-081c6e9aa7e4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"articleLinks", "[", 
+  RowBox[{"[", "4790", "]"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"cleanedArticleTexts", "[", 
+  RowBox[{"[", "4790", "]"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.796766958002413*^9, 3.796766971628994*^9}, {
+  3.796767019989723*^9, 3.79676704124485*^9}, {3.796767093987562*^9, 
+  3.796767097301544*^9}},
+ CellLabel->"In[40]:=",ExpressionUUID->"b8adbb5b-94f6-4240-9567-0e336264d1db"],
+
+Cell[BoxData["\<\"https://www.cnn.com/2020/03/06/politics/coronavirus-tests-\
+costs-insurers/index.html\"\>"], "Output",
+ CellChangeTimes->{
+  3.7967669725540047`*^9, {3.7967670246940813`*^9, 3.796767041712419*^9}, {
+   3.796767099678925*^9, 3.796767101061771*^9}},
+ CellLabel->"Out[40]=",ExpressionUUID->"753588e8-c974-4410-a871-850ef168bf81"]
+}, Open  ]],
+
+Cell[BoxData["\"\< Here's what you might have missed Tuesday on CNN:\\n-- \
+Trump's defense wraps its case as senators grapple with a potential witness \
+vote. One key Republican says, \\\"I think that Bolton probably has something \
+to offer us.\\\" Follow live updates.\\n-- Authorities believe Fotis Dulos, \
+the man accused of killing his estranged wife Jennifer Farber Dulos, made an \
+apparent suicide attempt today.\\n-- Israeli Prime Minister Benjamin \
+Netanyahu was formally indicted on bribery and fraud charges after he \
+withdrew a request for parliamentary immunity. He also happens to be visiting \
+Trump at the White House today.\\n-- Hong Kong closed some borders with China \
+, halted train services and cut flights as part of strict new efforts to \
+contain the spread of Wuhan coronavirus.\\n-- Kobe Bryant's pilot had special \
+permission to fly Sunday morning. His final exchange with air traffic control \
+could be a key clue to the crash.\\n-- Two bodies have been recovered from a \
+US military aircraft that crashed in Afghanistan yesterday, an official says.\
+\\n-- MacKenzie Bezos has unloaded another piece of her marriage -- $370 \
+million worth of her Amazon shares.\\n\\n-- Irina Shayk opened up about her \
+breakup with Bradley Cooper in an usually candid interview.\\n\\n\\n   \\n\\n \
+\\n\\n\>\""], "Input",
+ CellChangeTimes->{{3.7967671959615803`*^9, 3.796767195964758*^9}},
+ CellLabel->"",ExpressionUUID->"ad604c47-bfa8-403e-bf26-80f1a38d286a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Position", "[", 
+  RowBox[{
+  "articleLinks", ",", 
+   "\"\<https://www.cnn.com/2020/01/28/app-news-section/quickly-catch-up-\
+january-28/index.html\>\""}], "]"}]], "Input",
+ CellChangeTimes->{{3.796767259729114*^9, 3.7967673337658463`*^9}, {
+  3.79676737520539*^9, 3.796767382351431*^9}},
+ CellLabel->"In[44]:=",ExpressionUUID->"05c4c4ac-9149-4c42-aae2-2d08811b25be"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", "5755", "}"}], "}"}]], "Output",
+ CellChangeTimes->{{3.796767330925415*^9, 3.7967673349041147`*^9}, 
+   3.796767384415169*^9},
+ CellLabel->"Out[44]=",ExpressionUUID->"9265179e-c52d-4890-91ee-4cf26ff41bde"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{
+   "\"\<sentiments.json\>\"", ",", "sentimentsAssociations", ",", " ", 
+    "\"\<RawJSON\>\""}], "]"}], " "}]], "Input",
+ CellChangeTimes->{{3.7966879340088043`*^9, 3.796687935994507*^9}, {
+  3.796688033547565*^9, 3.796688045134047*^9}, {3.796688170972542*^9, 
+  3.796688243804337*^9}},ExpressionUUID->"29a9ac55-197c-4b12-82fa-\
+34c171b0bb0a"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 755},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 18, 2020)",
+StyleDefinitions->"ReverseColor.nb",
+ExpressionUUID->"7b42ef1f-0ee3-4548-84f8-9e3440c045ff"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 345, 5, 98, "Title",ExpressionUUID->"8e9d676f-02c7-46e8-ae80-bfc196b55b09"],
+Cell[928, 29, 184, 3, 53, "Subtitle",ExpressionUUID->"cf77f1ed-5b2b-4f87-b950-7b08700c8bed"],
+Cell[CellGroupData[{
+Cell[1137, 36, 160, 3, 67, "Section",ExpressionUUID->"c2d0ca25-c9e8-47e2-bcd0-944686755f5c"],
+Cell[1300, 41, 1707, 28, 232, "Text",ExpressionUUID->"63675989-16d9-4d03-b417-9357c069932b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3044, 74, 183, 3, 67, "Section",ExpressionUUID->"029b7f44-3711-4c92-9757-b6d36b80f024"],
+Cell[3230, 79, 508, 11, 52, "Input",ExpressionUUID->"77a2a264-c96c-4927-8e8f-058bdcd4c693"],
+Cell[3741, 92, 253, 5, 30, "Input",ExpressionUUID->"ab751ff8-1b72-4b5e-828a-ea22cd08781a"],
+Cell[CellGroupData[{
+Cell[4019, 101, 4558, 98, 556, "Input",ExpressionUUID->"640cc3f2-c067-4155-9241-62d2808c6acf"],
+Cell[8580, 201, 158, 2, 34, "Output",ExpressionUUID->"60cf477b-ce37-4136-be8b-e90841e8c0da"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8775, 208, 219, 3, 30, "Input",ExpressionUUID->"f7078a60-c530-4d52-89e0-7fc94619a60d"],
+Cell[8997, 213, 152, 2, 34, "Output",ExpressionUUID->"ec304091-9a37-4118-a90b-7b8632034e6e"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9186, 220, 222, 3, 30, "Input",ExpressionUUID->"a2a66861-70bd-4363-8ffd-a972f261a846"],
+Cell[9411, 225, 152, 2, 34, "Output",ExpressionUUID->"13a1eb95-0093-44e0-b3c3-081c6e9aa7e4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9600, 232, 434, 8, 52, "Input",ExpressionUUID->"b8adbb5b-94f6-4240-9567-0e336264d1db"],
+Cell[10037, 242, 344, 5, 34, "Output",ExpressionUUID->"753588e8-c974-4410-a871-850ef168bf81"]
+}, Open  ]],
+Cell[10396, 250, 1481, 19, 388, InheritFromParent,ExpressionUUID->"ad604c47-bfa8-403e-bf26-80f1a38d286a"],
+Cell[CellGroupData[{
+Cell[11902, 273, 392, 8, 73, "Input",ExpressionUUID->"05c4c4ac-9149-4c42-aae2-2d08811b25be"],
+Cell[12297, 283, 249, 5, 57, "Output",ExpressionUUID->"9265179e-c52d-4890-91ee-4cf26ff41bde"]
+}, Open  ]],
+Cell[12561, 291, 405, 9, 30, "Input",ExpressionUUID->"29a9ac55-197c-4b12-82fa-34c171b0bb0a"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

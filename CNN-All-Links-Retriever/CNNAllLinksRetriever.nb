@@ -1,0 +1,233 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      8786,        225]
+NotebookOptionsPosition[      7308,        194]
+NotebookOutlinePosition[      7705,        210]
+CellTagsIndexPosition[      7662,        207]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["CNN All Links Retriever", "Title",
+ CellChangeTimes->{{3.796682180824741*^9, 3.796682184135859*^9}, 
+   3.796682241878413*^9, {3.796684307221323*^9, 
+   3.796684311068285*^9}},ExpressionUUID->"e04cd609-2ea9-426e-b63c-\
+8eabda3848d9"],
+
+Cell["Author : Nathan Ostrowski, @nostrowski", "Subtitle",
+ CellChangeTimes->{{3.796682192546691*^9, 
+  3.796682232581892*^9}},ExpressionUUID->"8a383e0f-ae46-4a93-a040-\
+4f995fb7dc78"],
+
+Cell[CellGroupData[{
+
+Cell["Description :", "Section",
+ CellChangeTimes->{{3.7966822625433292`*^9, 
+  3.796682274649291*^9}},ExpressionUUID->"cca8477d-099c-4dbd-bc58-\
+d15c6959ef59"],
+
+Cell["\<\
+The following notebook, when evaluated, will find the link of each and every \
+CNN Article matching a given search parameter. The notebook then will export \
+those links to \[OpenCurlyDoubleQuote]articleLinks.mx\[CloseCurlyDoubleQuote].
+
+To do so, the notebook will open a web session in your default browser, open \
+a search page, and add up to 100 links at a time before closing that browser \
+window. The process will repeat for as many hundreds of links you are \
+attempting to find. 
+
+To run this notebook, simply change the search parameter, specify the number \
+of articles you wish to find, then go to  \[OpenCurlyDoubleQuote]Evaluation > \
+Evaluate Notebook\[CloseCurlyDoubleQuote]\
+\>", "Text",
+ CellChangeTimes->{{3.796682168550672*^9, 3.796682175665881*^9}, {
+  3.796682286774581*^9, 3.796682324556007*^9}, {3.796682532527923*^9, 
+  3.796682648468836*^9}, {3.796682896744295*^9, 3.7966828970786858`*^9}, {
+  3.796684179529769*^9, 3.7966842974870787`*^9}, {3.7966845558299837`*^9, 
+  3.7966845837150803`*^9}, {3.7966846346377907`*^9, 3.796684734470188*^9}, {
+  3.796684918310869*^9, 3.796684950275509*^9}, {3.796688495804021*^9, 
+  3.796688496172906*^9}, {3.796688756810237*^9, 
+  3.796688763499879*^9}},ExpressionUUID->"6e276047-0bb5-427f-9410-\
+4245a1d7e7f5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Executable Code", "Section",
+ CellChangeTimes->{{3.796682282746868*^9, 3.796682285077179*^9}, 
+   3.796682337329475*^9},ExpressionUUID->"18d4d095-0e56-40df-a5b3-\
+94ce479d9d58"],
+
+Cell[BoxData[{
+ RowBox[{"searchParameter", " ", "=", " ", 
+  "\"\<YOUR_SEARCH\>\""}], "\[IndentingNewLine]", 
+ RowBox[{"totalArticles", " ", "=", " ", "NaN"}]}], "Input",
+ CellChangeTimes->{{3.796684883580494*^9, 3.7966849018039618`*^9}, {
+  3.7966887410043573`*^9, 
+  3.796688747631531*^9}},ExpressionUUID->"f9ac773f-e010-47f6-8fc7-\
+52aa194fc67f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"baseUrl", " ", "=", " ", 
+   RowBox[{"StringReplace", "[", 
+    RowBox[{
+    "\"\<https://www.cnn.com/search?q=SEARCHTERM&size=100&sort=newest&type=\
+article&from=0&page=1\>\"", ",", 
+     RowBox[{"\"\<SEARCHTERM\>\"", "\[Rule]", " ", "searchParameter"}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.79665715615511*^9, 3.796657172196554*^9}, {
+   3.796657363451271*^9, 3.796657386181271*^9}, {3.796658216242249*^9, 
+   3.796658218461317*^9}, {3.796662711407481*^9, 3.796662712413604*^9}, 
+   3.796664475336656*^9, 3.7966692787645597`*^9, {3.796684849767809*^9, 
+   3.796684873695881*^9}, {3.796684974269105*^9, 
+   3.796685032518034*^9}},ExpressionUUID->"213bb91d-ec25-42da-888e-\
+e31e3a24e233"],
+
+Cell[BoxData[
+ RowBox[{"searchLinks", " ", "=", " ", 
+  RowBox[{"{", "}"}]}]], "Input",
+ CellChangeTimes->{{3.796684378877286*^9, 
+  3.796684382356369*^9}},ExpressionUUID->"ed01474b-405b-4ba8-a06d-\
+0fc886cac8b3"],
+
+Cell[BoxData[
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "1"}], ",", " ", 
+   RowBox[{"i", "<", 
+    RowBox[{"(", 
+     RowBox[{"totalArticles", "/", "100"}], ")"}]}], ",", " ", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"AppendTo", "[", 
+    RowBox[{"searchLinks", ",", 
+     RowBox[{"StringReplace", "[", "\[IndentingNewLine]", 
+      RowBox[{"baseUrl", ",", 
+       RowBox[{"\"\<from=3500\>\"", "\[Rule]", 
+        RowBox[{"ToString", "[", 
+         RowBox[{"(", 
+          RowBox[{"\"\<from=\>\"", "<>", " ", 
+           RowBox[{"ToString", "[", 
+            RowBox[{"(", 
+             RowBox[{"100", "+", 
+              RowBox[{"(", 
+               RowBox[{"i", "*", "100"}], ")"}]}], ")"}], "]"}]}], ")"}], 
+         "]"}]}]}], "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+    "]"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.796684386546028*^9, 3.796684393456172*^9}, {
+  3.7966844250719757`*^9, 
+  3.79668453792808*^9}},ExpressionUUID->"43d443aa-318c-46de-8d44-\
+55f7a1ee14de"],
+
+Cell[BoxData[
+ RowBox[{"articleLinks", " ", "=", " ", 
+  RowBox[{"{", "}"}]}]], "Input",
+ CellChangeTimes->{{3.796684545054043*^9, 
+  3.796684548174176*^9}},ExpressionUUID->"f695ebbe-e5dc-4e6b-94b2-\
+56ffab7fcdc0"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"For", "[", 
+    RowBox[{
+     RowBox[{"i", "=", "1"}], ",", 
+     RowBox[{"i", "<", 
+      RowBox[{
+       RowBox[{"Length", "[", "searchLinks", "]"}], "+", "1"}]}], ",", " ", 
+     RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"session", " ", "=", " ", 
+       RowBox[{"StartWebSession", "[", "]"}]}], " ", ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"WebExecute", "[", 
+       RowBox[{"\"\<OpenPage\>\"", "\[Rule]", " ", 
+        RowBox[{"searchLinks", "[", 
+         RowBox[{"[", "i", "]"}], "]"}]}], "]"}], " ", ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Pause", "[", "2", "]"}], " ", ";", "\[IndentingNewLine]", 
+      RowBox[{"rawLinks", " ", "=", " ", 
+       RowBox[{"WebExecute", "[", "\"\<PageHyperlinks\>\"", "]"}]}], " ", ";",
+       "\[IndentingNewLine]", 
+      RowBox[{"cleanLinks", " ", "=", " ", 
+       RowBox[{"DeleteDuplicates", "[", 
+        RowBox[{"Drop", "[", 
+         RowBox[{
+          RowBox[{"Drop", "[", 
+           RowBox[{"rawLinks", ",", " ", "122"}], "]"}], ",", " ", 
+          RowBox[{"-", "120"}]}], "]"}], "]"}]}], " ", ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"AppendTo", "[", 
+       RowBox[{"articleLinks", ",", " ", "cleanLinks"}], "]"}], " ", ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"DeleteObject", "[", "session", "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"articleLinks", " ", "=", " ", 
+   RowBox[{"Flatten", "[", "articleLinks", "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.796684612048765*^9, 3.796684616091567*^9}, 
+   3.796684753957527*^9},ExpressionUUID->"7be22606-926b-41c3-bb48-\
+0ce25d4f4195"],
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{"articleLinks", ",", " ", "\"\<articleLinks.mx\>\""}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.796684756065028*^9, 
+  3.796684774075118*^9}},ExpressionUUID->"16389f85-e3ac-4280-9942-\
+1e1f14ca3560"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{662, 855},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 18, 2020)",
+StyleDefinitions->"ReverseColor.nb",
+ExpressionUUID->"67ab9697-b8d6-486e-9e55-0cba7a994230"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 239, 4, 98, "Title",ExpressionUUID->"e04cd609-2ea9-426e-b63c-8eabda3848d9"],
+Cell[822, 28, 184, 3, 53, "Subtitle",ExpressionUUID->"8a383e0f-ae46-4a93-a040-4f995fb7dc78"],
+Cell[CellGroupData[{
+Cell[1031, 35, 160, 3, 67, "Section",ExpressionUUID->"cca8477d-099c-4dbd-bc58-d15c6959ef59"],
+Cell[1194, 40, 1282, 22, 212, "Text",ExpressionUUID->"6e276047-0bb5-427f-9410-4245a1d7e7f5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2513, 67, 183, 3, 67, "Section",ExpressionUUID->"18d4d095-0e56-40df-a5b3-94ce479d9d58"],
+Cell[2699, 72, 349, 7, 52, "Input",ExpressionUUID->"f9ac773f-e010-47f6-8fc7-52aa194fc67f"],
+Cell[3051, 81, 741, 15, 115, "Input",ExpressionUUID->"213bb91d-ec25-42da-888e-e31e3a24e233"],
+Cell[3795, 98, 213, 5, 30, "Input",ExpressionUUID->"ed01474b-405b-4ba8-a06d-0fc886cac8b3"],
+Cell[4011, 105, 1051, 26, 157, "Input",ExpressionUUID->"43d443aa-318c-46de-8d44-55f7a1ee14de"],
+Cell[5065, 133, 214, 5, 30, "Input",ExpressionUUID->"f695ebbe-e5dc-4e6b-94b2-56ffab7fcdc0"],
+Cell[5282, 140, 1746, 42, 241, "Input",ExpressionUUID->"7be22606-926b-41c3-bb48-0ce25d4f4195"],
+Cell[7031, 184, 249, 6, 30, "Input",ExpressionUUID->"16389f85-e3ac-4280-9942-1e1f14ca3560"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

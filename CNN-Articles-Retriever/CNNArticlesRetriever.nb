@@ -1,0 +1,167 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      6005,        159]
+NotebookOptionsPosition[      4666,        128]
+NotebookOutlinePosition[      5118,        146]
+CellTagsIndexPosition[      5075,        143]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["CNN Article Retriever", "Title",
+ CellChangeTimes->{{3.796682180824741*^9, 3.796682184135859*^9}, 
+   3.796682241878413*^9, {3.796683960140107*^9, 
+   3.7966839690552473`*^9}},ExpressionUUID->"e28890b2-d4ae-4ade-981f-\
+cbf9d30fbf34"],
+
+Cell["Author : Nathan Ostrowski, @nostrowski", "Subtitle",
+ CellChangeTimes->{{3.796682192546691*^9, 
+  3.796682232581892*^9}},ExpressionUUID->"a95604cf-f718-4598-a325-\
+48ecb64f3973"],
+
+Cell[CellGroupData[{
+
+Cell["Description :", "Section",
+ CellChangeTimes->{{3.7966822625433292`*^9, 
+  3.796682274649291*^9}},ExpressionUUID->"4bc9817b-7236-4cb9-919f-\
+430c79ddd4d1"],
+
+Cell["\<\
+The following notebook, when evaluated, will read the List object \
+\[OpenCurlyDoubleQuote]articleLinks\[CloseCurlyDoubleQuote] from the provided \
+file \[OpenCurlyDoubleQuote]articleLinks.mx\[CloseCurlyDoubleQuote] and \
+subsequently loop through each provided URL, importing the raw CNN Article \
+text and adding it to an \[OpenCurlyDoubleQuote]articleTexts\
+\[CloseCurlyDoubleQuote] object. That object will be exported into \
+\[OpenCurlyDoubleQuote]articleTexts.mx\[CloseCurlyDoubleQuote], which can \
+then be combined with other similarly exported files of the same name.
+
+To run this notebook, simply go to  \[OpenCurlyDoubleQuote]Evaluation > \
+Evaluate Notebook\[CloseCurlyDoubleQuote]
+
+***Before running, you must define first article to download and the end \
+article to download. Those variables are startArticle and endArticle \
+respectively. Try running as many as you can! I\[CloseCurlyQuote]ve included \
+a print statement for each successful import so that you can be aware of your \
+progress at any given time. \
+\>", "Text",
+ CellChangeTimes->{{3.796682168550672*^9, 3.796682175665881*^9}, {
+  3.796682286774581*^9, 3.796682324556007*^9}, {3.796682532527923*^9, 
+  3.796682648468836*^9}, {3.796682896744295*^9, 3.7966828970786858`*^9}, {
+  3.796683985781517*^9, 3.796684008478705*^9}, {3.796688807599656*^9, 
+  3.796688807741356*^9}},ExpressionUUID->"13cebfc7-ac76-4c62-ac02-\
+186a43b81fc4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Executable Code", "Section",
+ CellChangeTimes->{{3.796682282746868*^9, 3.796682285077179*^9}, 
+   3.796682337329475*^9},ExpressionUUID->"f049cde7-bcf2-4a1a-a1bb-\
+8128fbfb9a9e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"articleLinks", " ", "=", " ", 
+   RowBox[{"Import", "[", "\"\<articleLinksV2.mx\>\"", "]"}]}], 
+  ";"}]], "Input",ExpressionUUID->"99a71f44-10c7-418d-99cc-83f511cd3093"],
+
+Cell[BoxData[
+ RowBox[{"articleTexts", " ", "=", " ", 
+  RowBox[{"{", "}"}]}]], "Input",
+ CellChangeTimes->{{3.796682424444552*^9, 3.79668244587824*^9}, {
+  3.7966824999858513`*^9, 
+  3.79668250092467*^9}},ExpressionUUID->"4b4ea458-12d0-4e8e-848a-\
+496ef6256078"],
+
+Cell[BoxData[{
+ RowBox[{"startArticle", " ", "=", " ", "NaN"}], "\[IndentingNewLine]", 
+ RowBox[{"endArticle", " ", "=", " ", "NaN"}]}], "Input",
+ CellChangeTimes->{{3.796682502781124*^9, 3.7966825240456457`*^9}, {
+  3.7966826586996737`*^9, 
+  3.796682682948328*^9}},ExpressionUUID->"25f0b271-c34c-4797-9aa1-\
+0515293a63bc"],
+
+Cell[BoxData[
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "startArticle"}], ",", " ", 
+   RowBox[{"i", "<", 
+    RowBox[{"endArticle", "+", "1"}]}], ",", " ", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"articleTexts", ",", " ", 
+      RowBox[{"Import", "[", 
+       RowBox[{"articleLinks", "[", 
+        RowBox[{"[", "i", "]"}], "]"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", "i", "]"}]}]}], "\[IndentingNewLine]", 
+  "]"}]], "Input",
+ CellChangeTimes->{
+  3.796682497753326*^9, {3.7966826862713537`*^9, 
+   3.7966827266318817`*^9}},ExpressionUUID->"5e473b38-4108-4187-8589-\
+5f5048860e5f"],
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{"articleTexts", ",", " ", "\"\<articleTexts.mx\>\""}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.796682709373849*^9, 3.79668273044739*^9}, {
+  3.796682762959708*^9, 
+  3.796682775813107*^9}},ExpressionUUID->"6837e74a-f7e6-4e4e-8e1c-\
+3c7f22b0f67d"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 755},
+WindowMargins->{{Automatic, 19}, {Automatic, 0}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 18, 2020)",
+StyleDefinitions->"ReverseColor.nb",
+ExpressionUUID->"d4174309-1018-4866-8eeb-09a30c799711"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 239, 4, 98, "Title",ExpressionUUID->"e28890b2-d4ae-4ade-981f-cbf9d30fbf34"],
+Cell[822, 28, 184, 3, 53, "Subtitle",ExpressionUUID->"a95604cf-f718-4598-a325-48ecb64f3973"],
+Cell[CellGroupData[{
+Cell[1031, 35, 160, 3, 67, "Section",ExpressionUUID->"4bc9817b-7236-4cb9-919f-430c79ddd4d1"],
+Cell[1194, 40, 1419, 24, 212, "Text",ExpressionUUID->"13cebfc7-ac76-4c62-ac02-186a43b81fc4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2650, 69, 183, 3, 67, "Section",ExpressionUUID->"f049cde7-bcf2-4a1a-a1bb-8128fbfb9a9e"],
+Cell[2836, 74, 204, 4, 30, "Input",ExpressionUUID->"99a71f44-10c7-418d-99cc-83f511cd3093"],
+Cell[3043, 80, 263, 6, 30, "Input",ExpressionUUID->"4b4ea458-12d0-4e8e-848a-496ef6256078"],
+Cell[3309, 88, 324, 6, 52, "Input",ExpressionUUID->"25f0b271-c34c-4797-9aa1-0515293a63bc"],
+Cell[3636, 96, 702, 19, 94, "Input",ExpressionUUID->"5e473b38-4108-4187-8589-5f5048860e5f"],
+Cell[4341, 117, 297, 7, 30, "Input",ExpressionUUID->"6837e74a-f7e6-4e4e-8e1c-3c7f22b0f67d"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
